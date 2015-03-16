@@ -58,6 +58,9 @@ object Plugin extends sbt.Plugin {
   val licenseInfo = TaskKey[Unit]("dependency-license-info",
     "Aggregates and shows information about the licenses of dependencies")
 
+  val writeLicenseInfoInLicenseFinderFormat = TaskKey[Unit]("dependency-license-licensefinder-format",
+    "Writest the license info in the License finder <https://github.com/pivotal/LicenseFinder> format")
+
   // internal
   import ModuleGraphProtocol._
   val moduleGraphStore = TaskKey[IvyGraphMLDependencies.ModuleGraph]("module-graph-store", "The stored module-graph from the last run")
@@ -133,7 +136,8 @@ object Plugin extends sbt.Plugin {
         streams.log.info(IvyGraphMLDependencies.asciiTree(IvyGraphMLDependencies.reverseGraphStartingAt(graph, module)))
       }
     },
-    licenseInfo <<= (moduleGraph, streams) map showLicenseInfo
+    licenseInfo <<= (moduleGraph, streams) map showLicenseInfo,
+    writeLicenseInfoInLicenseFinderFormat <<= (moduleGraph, streams) map writeInLicenseFinderFormat
   ))
 
   def printAsciiGraphTask =
@@ -165,6 +169,15 @@ object Plugin extends sbt.Plugin {
           license.getOrElse("No license specified")+"\n"+
           modules.map(_.id.idString formatted "\t %s").mkString("\n")
       }.mkString("\n\n")
+    streams.log.info(output)
+  }
+
+  def writeInLicenseFinderFormat(graph: ModuleGraph, streams: TaskStreams) {
+    val output =
+      graph.nodes.filter(_.isUsed).map {
+        case (module) =>
+          List(module.id.idString, module.id.version, module.license.getOrElse("No license specified")).mkString(",")
+      }.mkString("\n")
     streams.log.info(output)
   }
 
