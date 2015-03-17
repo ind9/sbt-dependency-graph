@@ -3,6 +3,12 @@ sbt-dependency-graph
 
 Visualize your project's dependencies.
 
+How To Build
+------------
+```scala
+$ sbt clean ^publish
+```
+
 How To Use
 ----------
 
@@ -34,6 +40,7 @@ Tasks
  * `what-depends-on <organization> <module> <revision>`: Find out what depends on an artifact. Shows a reverse dependency
    tree for the selected module.
  * `dependency-license-info`: show dependencies grouped by declared license
+ * `dependency-license-in-license-finder-format`: show dependencies in the [LicenseFinder](https://github.com/pivotal/LicenseFinder) format
  * `ivy-report`: let's ivy generate the resolution report for you project. Use
    `show ivy-report` for the filename of the generated report
 
