@@ -58,7 +58,7 @@ object Plugin extends sbt.Plugin {
   val licenseInfo = TaskKey[Unit]("dependency-license-info",
     "Aggregates and shows information about the licenses of dependencies")
 
-  val writeLicenseInfoInLicenseFinderFormat = TaskKey[Unit]("dependency-license-licensefinder-format",
+  val writeLicenseInfoInLicenseFinderFormat = TaskKey[Unit]("dependency-license-in-license-finder-format",
     "Writest the license info in the License finder <https://github.com/pivotal/LicenseFinder> format")
 
   // internal
@@ -176,7 +176,7 @@ object Plugin extends sbt.Plugin {
     val output =
       graph.nodes.filter(_.isUsed).map {
         case (module) =>
-          List(module.id.idString, module.id.version, module.license.getOrElse("No license specified")).mkString(",")
+          List(module.id.name, module.id.version, "\"%s\"".format(module.license.getOrElse("No license specified"))).mkString(",")
       }.mkString("\n")
     streams.log.info(output)
   }
