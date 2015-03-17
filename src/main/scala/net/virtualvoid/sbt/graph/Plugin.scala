@@ -16,6 +16,8 @@
 
 package net.virtualvoid.sbt.graph
 
+import java.io.{FileOutputStream, PrintWriter}
+
 import sbt._
 import Keys._
 import complete.Parser
@@ -173,12 +175,15 @@ object Plugin extends sbt.Plugin {
   }
 
   def writeInLicenseFinderFormat(graph: ModuleGraph, streams: TaskStreams) {
+    val writer = new PrintWriter(new FileOutputStream("dependencies.csv", true), true)
     val output =
       graph.nodes.filter(_.isUsed).map {
         case (module) =>
-          List(module.id.name, module.id.version, "\"%s\"".format(module.license.getOrElse("No license specified"))).mkString(",")
+          List(module.id.name, module.id.version, "\"%s\"".format(module.license.getOrElse("unknown"))).mkString(", ")
       }.mkString("\n")
     streams.log.info(output)
+    writer.println(output)
+    writer.close()
   }
 
   import Project._
