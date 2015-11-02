@@ -1,18 +1,19 @@
 publishTo <<= version { v: String =>
-  val nexus = "https://oss.sonatype.org/"
-  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
-  else                             Some("releases" at nexus + "service/local/staging/deploy/maven2")
+  if (v.trim.endsWith("SNAPSHOT"))
+    Some("Indix Snapshot Artifactory" at "http://artifacts.indix.tv:8081/artifactory/libs-snapshot-local")
+  else
+    Some("Indix Release Artifactory" at "http://artifacts.indix.tv:8081/artifactory/libs-release-local")
 }
 
 publishMavenStyle := true
 
 publishArtifact in Test := false
 
-pomIncludeRepository := { _ => false }
+pomIncludeRepository := { _ => true }
 
 pomExtra :=
   Helpers.generatePomExtra("git@github.com:jrudolph/sbt-dependency-graph.git",
                            "scm:git:git@github.com:jrudolph/sbt-dependency-graph.git",
                            "jrudolph", "Johannes Rudolph")
 
-useGpg := true
+//useGpg := true
